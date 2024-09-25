@@ -3,12 +3,8 @@ import gym
 import numpy as np
 from gym.envs.robotics import rotations
 
-
-# 定义一个自定义的环境包装器 GlobalObservation，继承自 Gym 的 Wrapper 类
 class GlobalObservation(gym.Wrapper):
-    # 构造函数，初始化 GlobalObservation 对象
     def __init__(self, env):
-        # 调用父类的构造函数初始化环境
         gym.Wrapper.__init__(self, env)
         self.distance_threshold2 = 0.01
         self.rotation_threshold2 = 0.03
