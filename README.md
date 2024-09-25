@@ -1,6 +1,6 @@
 # Real-time Dexterous Telemanipulation with an End-Effect-Oriented  Learning-based Approach
 
-This project implements a Reinforcement Learning (RL)-based robotic teleoperation system. The system uses ARUCO marker detection and built-in Inertial Measurement Unit (IMU) for pose estimation and tracks the target object’s orientation in real-time. The code integrates a deep deterministic policy gradient (DDPG) model for controlling the robot's movements in a simulated environment using OpenAI Gym.
+This project implements a Reinforcement Learning (RL)-based robotic teleoperation system. The system uses ARUCO marker detection and built-in Inertial Measurement Unit (IMU) for pose estimation and tracks the target object’s orientation in real-time. The code integrates a Deep Deterministic Policy Gradient (DDPG) model for controlling the robot's movements in a simulated environment using OpenAI Gym.
 
 ## Requirements
 
