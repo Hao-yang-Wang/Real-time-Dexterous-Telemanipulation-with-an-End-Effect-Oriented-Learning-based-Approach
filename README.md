@@ -23,6 +23,12 @@ Install the required packages using pip:
 pip install torch gym numpy opencv-python matplotlib transforms3d
 ```
 
+Or using `requirements.txt`, run:
+
+```bash
+pip install -r requirements.txt
+```
+
 ### External Files
 - `camera_params.npz`: This file contains pre-calibrated camera parameters (mtx for the camera matrix and dist for distortion coefficients).
 - `model.pt`: This is the trained actor model used by the RL system.
