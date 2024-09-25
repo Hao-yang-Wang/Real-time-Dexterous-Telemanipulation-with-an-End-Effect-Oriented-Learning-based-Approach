@@ -7,7 +7,7 @@ import transformations as tf
 import cv2
 import matplotlib.pyplot as plt 
 
-# process the inputs
+# Process the inputs
 def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
     o_clip = np.clip(o, -args.clip_obs, args.clip_obs)
     g_clip = np.clip(g, -args.clip_obs, args.clip_obs)
@@ -17,47 +17,45 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
     inputs = torch.tensor(inputs, dtype=torch.float32)
     return inputs
 
-
-
 if __name__ == '__main__':
 
     loaded_data = np.load('camera_params.npz')
     loaded_camera_matrix = loaded_data['mtx']
     loaded_dist_coeffs = loaded_data['dist']
 
-    # 设置相机参数
+    # Set camera parameters
     camera_matrix = np.array([[640, 0, 320], [0, 640, 240], [0, 0, 1]], dtype=np.float32)
     dist_coeffs = np.zeros((4, 1), dtype=np.float32)
 
-    # 创建ARUCO字典
+    # Create ARUCO dictionary
     aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
 
-    # 创建ARUCO检测器
+    # Create ARUCO detector
     parameters = cv2.aruco.DetectorParameters_create()
 
-    # 打开摄像头
+    # Open the camera
     cap = cv2.VideoCapture(1)
     
     args = get_args()
     
-    # load the model param
+    # Load the model parameters
     model_path = args.save_dir + args.env_name + '/model.pt'
     o_mean, o_std, g_mean, g_std, model = torch.load(model_path, map_location=lambda storage, loc: storage)
     
-    # create the environment
+    # Create the environment
     env = gym.make(args.env_name)
     
-    # get the env param
+    # Get the environment parameters
     observation = env.reset()
     
-    # get the environment params
+    # Define the environment parameters
     env_params = {'obs': observation['observation'].shape[0], 
                   'goal': observation['desired_goal'].shape[0], 
                   'action': env.action_space.shape[0], 
                   'action_max': env.action_space.high[0],
                   }
                   
-    # create the actor network
+    # Create the actor network
     actor_network = actor(env_params)
     actor_network.load_state_dict(model)
     actor_network.eval()
@@ -78,16 +76,16 @@ if __name__ == '__main__':
         yaw = 0 
         roll = 0
         
-        for t in range(300): # env._max_episode_steps
+        for t in range(300):  # env._max_episode_steps
         
-            # 读取视频流
+            # Read the video stream
             ret, frame = cap.read()
 
-            # 检测ARUCO码
+            # Detect ARUCO markers
             corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(frame, aruco_dict, parameters=parameters)
 
             if ids is not None:
-                # 估计位姿
+                # Estimate pose
                 rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners, 0.05, camera_matrix, dist_coeffs)
 
                 for i in range(len(rvec)):
@@ -103,10 +101,10 @@ if __name__ == '__main__':
                     # print("Euler Angles (Pitch, Yaw, Roll):", pitch, yaw, roll)
 
                     
-                # 在图像上绘制检测到的ARUCO码
+                # Draw detected ARUCO markers on the image
                 frame = cv2.aruco.drawDetectedMarkers(frame, corners, ids)
 
-            # 显示结果
+            # Show the result
             cv2.imshow('ARUCO Pose Estimation', frame)
         
             env.render()
@@ -131,7 +129,7 @@ if __name__ == '__main__':
             ox, oy ,oz = tf.euler_from_quaternion(acg[-4:])
             actual_angles.append(oz)
             
-        #print('the episode is: {}, is success: {}'.format(i, info['is_success']))
+        #print('The episode is: {}, is success: {}'.format(i, info['is_success']))
         mse = np.mean((np.array(actual_angles) - np.array(target_angles)) ** 2)
 
         plt.plot(target_angles, label='Target')
